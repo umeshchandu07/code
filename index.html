@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agathiyar Aahar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Tailwind Configuration for health theme */
+        :root {
+            --color-primary-teal: #00A388;
+            --color-primary-indigo: #4F46E5;
+            --color-secondary-green: #10B981; /* Tailwind Emerald 500 */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdfa; /* Lightest mint/teal background */
+        }
+        .container {
+            max-width: 1200px;
+        }
+        /* Custom styles for disease buttons to show active state */
+        .disease-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid #e0f2f1; 
+            user-select: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .disease-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 163, 136, 0.25);
+            border-color: var(--color-primary-teal);
+        }
+        .menu-item {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Gradient for the header to look more premium */
+        .header-gradient {
+            background-image: linear-gradient(to right, #00A388, #16a34a);
+        }
+        /* Custom styles for the fixed cart on desktop */
+        @media (min-width: 1024px) {
+            .sticky-cart {
+                position: sticky;
+                top: 2rem;
+            }
+        }
+        /* Grid adjustment for buttons */
+        .disease-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .disease-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .disease-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        .add-to-cart-btn {
+            background-color: var(--color-secondary-green);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+        }
+        .add-to-cart-btn:hover {
+            background-color: #059669; /* Darker emerald */
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* Symbol styling for professionalism */
+        .disease-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem; /* Larger emoji size */
+            line-height: 1;
+            width: 40px; 
+            height: 40px;
+            margin-bottom: 8px;
+            border-radius: 9999px;
+            border-width: 2px;
+        }
+    </style>
+    <!-- Tailwind config for theme colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-teal': '#00A388',
+                        'primary-indigo': '#4F46E5',
+                        'light-bg': '#f0fdfa',
+                        'secondary-green': '#10B981',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="text-center mb-6 p-8 rounded-3xl header-gradient shadow-2xl">
+            <h1 class="text-7xl font-extrabold text-white tracking-tighter">Agathiyar Aahar</h1>
+            <p class="mt-4 text-xl font-medium text-white/90">Nature's Freshness, Chef's Expertise</p>
+        </header>
+
+        <!-- Helpline Number (New Addition) -->
+        <div class="text-center mb-10 p-4 bg-white rounded-xl shadow-xl border border-primary-teal/30 max-w-lg mx-auto transform hover:scale-[1.01] transition-transform duration-300">
+            <p class="text-lg font-bold text-gray-800 flex items-center justify-center">
+                Need Help? Call <span class="text-primary-teal ml-2 underline underline-offset-4 decoration-primary-teal">📞 1800-AGATHIYR-88</span>
+            </p>
+        </div>
+        
+        <!-- Disease Selection Section -->
+        <section id="disease-selection" class="mb-12 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">What are you craving today? <span class="text-primary-teal">Select Your Condition:</span></h2>
+            
+            <!-- Search Bar -->
+            <div class="w-full max-w-lg mx-auto mb-8 flex rounded-2xl overflow-hidden shadow-2xl border-4 border-primary-teal/50">
+                <input id="disease-input" type="text" placeholder="Search for PCOD, Thyroid, or select a common condition..." class="flex-grow p-4 text-lg rounded-l-xl focus:outline-none focus:ring-4 focus:ring-primary-teal/30 transition-all">
+                <button onclick="searchDisease()" class="bg-primary-teal text-white font-bold py-4 px-6 hover:bg-[#008f75] transition-colors duration-300">
+                    Search
+                </button>
+            </div>
+
+            <!-- Disease Buttons Grid (Now with Symbols) -->
+            <div class="disease-grid mx-auto max-w-6xl">
+                
+                <button onclick="selectDisease('Diabetes')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-green-50 border-green-300">💉</div>
+                    <span class="text-sm font-semibold text-gray-700">Diabetes</span>
+                </button>
+                <button onclick="selectDisease('Hypertension')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-red-50 border-red-300">🩸</div>
+                    <span class="text-sm font-semibold text-gray-700">High BP</span>
+                </button>
+                <button onclick="selectDisease('Celiac')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-yellow-50 border-yellow-300">🚫🌾</div>
+                    <span class="text-sm font-semibold text-gray-700">Celiac Disease</span>
+                </button>
+                <button onclick="selectDisease('General Wellness')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-blue-50 border-blue-300">✨</div>
+                    <span class="text-sm font-semibold text-gray-700">Wellness</span>
+                </button>
+                <button onclick="selectDisease('Fever')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-orange-50 border-orange-300">🌡️</div>
+                    <span class="text-sm font-semibold text-gray-700">Fever</span>
+                </button>
+                
+                <button onclick="selectDisease('Kidney Stones')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-lime-50 border-lime-300">💧</div>
+                    <span class="text-sm font-semibold text-gray-700">Kidney Stones</span>
+                </button>
+                <button onclick="selectDisease('Dengue Fever')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-pink-50 border-pink-300">🦟</div>
+                    <span class="text-sm font-semibold text-gray-700">Dengue Fever</span>
+                </button>
+                <button onclick="selectDisease('Jaundice')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-amber-50 border-amber-300">💛</div>
+                    <span class="text-sm font-semibold text-gray-700">Jaundice</span>
+                </button>
+
+                <button onclick="selectDisease('Skin Diseases')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-emerald-50 border-emerald-300">🩹</div>
+                    <span class="text-sm font-semibold text-gray-700">Skin Diseases</span>
+                </button>
+                <button onclick="selectDisease('Thyroid Issues (Hypo)')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-cyan-50 border-cyan-300">🦋</div>
+                    <span class="text-sm font-semibold text-gray-700">Thyroid Issues</span>
+                </button>
+                <button onclick="selectDisease('Migraine')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-purple-50 border-purple-300">🧠</div>
+                    <span class="text-sm font-semibold text-gray-700">Migraine</span>
+                </button>
+                <button onclick="selectDisease('Cancer')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-rose-50 border-rose-300">🌱</div>
+                    <span class="text-sm font-semibold text-gray-700">Cancer</span>
+                </button>
+                <button onclick="selectDisease('Diarrhea / Loose Motions')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-gray-100 border-gray-400">🚽</div>
+                    <span class="text-sm font-semibold text-gray-700">Diarrhea</span>
+                </button>
+                
+                <button onclick="selectDisease('Acidity')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-yellow-100 border-yellow-400">🥛</div>
+                    <span class="text-sm font-semibold text-gray-700">Acidity</span>
+                </button>
+                <button onclick="selectDisease('Heart Disease')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-red-100 border-red-400">🫀</div>
+                    <span class="text-sm font-semibold text-gray-700">Heart Disease</span>
+                </button>
+                <button onclick="selectDisease('Chicken Pox')" class="disease-card bg-white p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center">
+                    <div class="disease-icon bg-cyan-100 border-cyan-400">🧊</div>
+                    <span class="text-sm font-semibold text-gray-700">Chicken Pox</span>
+                </button>
+            </div>
+
+            <!-- New Report Upload Section -->
+            <div class="mt-12 p-8 rounded-2xl bg-white shadow-2xl border-4 border-primary-indigo/50 max-w-lg mx-auto transform hover:scale-[1.01] transition-transform duration-300">
+                <h3 class="text-2xl font-extrabold text-primary-indigo mb-4 flex items-center justify-center">
+                    <span class="text-3xl mr-2">🔬</span> Personalized Diet Plan (Optional)
+                </h3>
+                <p class="text-sm text-gray-600 mb-4">Unlock a highly customized menu by **simulating** an AI analysis of your health report. Upload PDF/Image below:</p>
+                <div class="flex flex-col space-y-3">
+                    <input type="file" id="health-report-upload" accept=".pdf,image/*" class="w-full text-sm text-gray-500
+                        file:mr-4 file:py-3 file:px-6
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-bold
+                        file:bg-primary-indigo/10 file:text-primary-indigo
+                        hover:file:bg-primary-indigo/20 cursor-pointer"
+                    >
+                    <button onclick="processReport()" class="w-full bg-primary-indigo text-white font-bold py-3 px-4 rounded-xl shadow-xl hover:bg-[#3d36b8] transition-all duration-300 transform hover:scale-[1.02]">
+                        Generate Personalized Plan
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Section - Restaurants & Cart -->
+        <section id="main-content" class="hidden">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Restaurant List -->
+                <div class="lg:w-3/4 bg-white p-6 rounded-2xl shadow-2xl border border-gray-100">
+                    <div class="flex justify-between items-center mb-6 border-b pb-4 border-gray-200">
+                        <h2 id="restaurant-heading" class="text-3xl font-extrabold text-primary-teal">Restaurants</h2>
+                        <button onclick="clearSelection()" class="text-sm text-gray-500 hover:text-red-500 font-medium transition-colors duration-300 px-3 py-2 rounded-xl border border-gray-300 hover:border-red-500 hover:shadow-md">Clear Selection</button>
+                    </div>
+
+                    <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Restaurant cards will be injected here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Shopping Cart -->
+                <div class="lg:w-1/4 bg-white p-6 rounded-2xl shadow-2xl border border-primary-teal/20 sticky-cart">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-3">Your Cart</h2>
+                    <div id="cart-items" class="mb-4">
+                        <p class="text-gray-500 text-sm italic p-2 rounded-lg bg-gray-50">Your cart is empty.</p>
+                    </div>
+                    <div class="border-t border-gray-200 pt-4">
+                        <div class="flex justify-between items-center font-extrabold text-xl mb-4 text-gray-900">
+                            <span>Total:</span>
+                            <span id="cart-total" class="text-primary-teal">₹0.00</span>
+                        </div>
+                        <button id="checkout-btn" onclick="checkout()" class="w-full text-white font-bold py-3 px-4 rounded-xl add-to-cart-btn hover:scale-[1.02]">
+                            Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Message Box Modal (for alerts/confirmations) -->
+    <div id="message-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center transform transition-transform duration-300 scale-100">
+            <h3 id="modal-title" class="text-2xl font-bold text-primary-teal mb-4"></h3>
+            <p id="modal-message" class="text-gray-600 mb-6"></p>
+            <button onclick="closeModal()" class="bg-primary-indigo text-white font-bold py-2 px-6 rounded-xl shadow-md hover:bg-primary-indigo/80 transition-colors duration-300">OK</button>
+        </div>
+    </div>
+    
+    <script>
+        // --- Data Definitions ---
+        const menuData = {
+            'Diabetes': [
+                {
+                    restaurant: 'Green Leaf Cafe',
+                    mealKits: [
+                        {
+                            name: '1 Week Low-GI Diabetes Kit',
+                            price: 499.00,
+                            image: 'https://placehold.co/150x150/00A388/ffffff?text=7+Day+Kit',
+                            description: '7-day plan featuring low GI grains, lean protein, and high fiber meals. Includes Roti, Dal, Khichdi, and Salad pre-packs.',
+                            kitItems: ['7x Multigrain Roti Packs', '7x Moong Dal Khichdi Packs', '7x Steamed Veggie Bowls'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Multigrain Roti with Spinach Paneer', price: 55.00, image: 'https://placehold.co/150x150/8bc34a/ffffff?text=Roti', description: 'Made with whole grains and low-fat cheese. Good source of fiber.', time: 'Morning' },
+                        { name: 'Masala Moong Dal Khichdi', price: 40.00, image: 'https://placehold.co/150x150/ffee58/000?text=Khichdi', description: 'A light dish with lentils and rice, easy on blood sugar.', time: 'Morning' },
+                        { name: 'Besan Cheela (Savory Pancake)', price: 40.00, image: 'https://placehold.co/150x150/4fc3f7/000?text=Cheela', description: 'Protein-rich chickpea flour pancake, low GI.', time: 'Morning' },
+                        { name: 'Quinoa & Grilled Chicken Salad', price: 65.00, image: 'https://placehold.co/150x150/8bc34a/ffffff?text=QG', description: 'High fiber, low carb salad with lean protein.', time: 'Afternoon' },
+                        { name: 'Rajma Chawal with Brown Rice', price: 60.00, image: 'https://placehold.co/150x150/d32f2f/fff?text=Rajma', description: 'Protein-rich kidney beans served with complex brown rice.', time: 'Afternoon' },
+                        { name: 'Baked Chicken with Steamed Vegetables', price: 75.00, image: 'https://placehold.co/150x150/e57373/fff?text=Baked+Chkn', description: 'Lean protein source, low in saturated fats and easily digestible.', time: 'Night' },
+                        { name: 'Palak Dal', price: 35.00, image: 'https://placehold.co/150x150/8bc34a/000?text=Palak', description: 'A high-fiber spinach and lentil curry, light on the stomach.', time: 'Night' },
+                    ]
+                }
+            ],
+            'Hypertension': [
+                {
+                    restaurant: 'Fresh Fusion',
+                    mealKits: [
+                        {
+                            name: '1 Week Low-Sodium BP Kit',
+                            price: 449.00,
+                            image: 'https://placehold.co/150x150/FF4500/ffffff?text=7+Day+Kit',
+                            description: '7-day low-sodium, low-fat plan. Focuses on potassium-rich foods and heart-healthy grains. Salt substitutes used.',
+                            kitItems: ['7x Low-Salt Dhokla Packs', '7x Lentil Stew Pre-mixes', '7x Baked Chicken/Fish Packs'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Avo-Toast with Poached Egg (Low Salt)', price: 50.00, image: 'https://placehold.co/150x150/aed581/000?text=Avo', description: 'High in healthy fats and potassium to help regulate BP.', time: 'Morning' },
+                        { name: 'Steamed Dhokla (Low Salt)', price: 30.00, image: 'https://placehold.co/150x150/ffeb3b/000?text=Dhokla', description: 'A light, fermented snack prepared with minimal salt.', time: 'Morning' },
+                        { name: 'Hearty Lentil & Veggie Stew', price: 60.00, image: 'https://placehold.co/150x150/64dd17/000?text=Stew', description: 'Made without added salt, rich in fiber and vegetables.', time: 'Afternoon' },
+                        { name: 'Vegetable Uttapam (Less Salt)', price: 50.00, image: 'https://placehold.co/150x150/ffcc80/000?text=Uttapam', description: 'A wholesome pancake made with vegetables and less salt.', time: 'Afternoon' },
+                        { name: 'Tandoori Chicken Tikka (Low Sodium)', price: 80.00, image: 'https://placehold.co/150x150/e57373/fff?text=Tikka', description: 'Baked, not fried, with a low-sodium marinade.', time: 'Night' },
+                        { name: 'Chicken & Roasted Vegetable Skewers', price: 80.00, image: 'https://placehold.co/150x150/ffb74d/000?text=Skewers', description: 'Lean protein with heart-healthy vegetables.', time: 'Night' },
+                        { name: 'Garlic Yogurt Dip (Low Salt)', price: 25.00, image: 'https://placehold.co/150x150/aed581/000?text=Dip', description: 'A flavorful, low-sodium alternative to heavy sauces.', time: 'Night' },
+                    ]
+                }
+            ],
+            'Celiac': [
+                {
+                    restaurant: 'Gluten-Free Gourmet',
+                    mealKits: [
+                        {
+                            name: '1 Week Gluten-Free Purity Kit',
+                            price: 399.00,
+                            image: 'https://placehold.co/150x150/B8860B/ffffff?text=7+Day+Kit',
+                            description: '7-day kit featuring only naturally gluten-free grains and verified safe ingredients to ensure zero cross-contamination risk.',
+                            kitItems: ['7x Rice/Quinoa Packs', '7x GF Dosa/Idli Mix', '7x GF Pasta Packs', '7x Safe Chutneys'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Idli with Coconut Chutney', price: 35.00, image: 'https://placehold.co/150x150/bdbdbd/000?text=Idli', description: 'Steamed rice cakes, a wholesome and safe breakfast option.', time: 'Morning' },
+                        { name: 'Jowar Roti (Sorghum Flatbread)', price: 30.00, image: 'https://placehold.co/150x150/d32f2f/fff?text=Jowar', description: 'Naturally gluten-free flatbread.', time: 'Morning' },
+                        { name: 'Masala Dosa with Sambar', price: 45.00, image: 'https://placehold.co/150x150/fdd835/000?text=Dosa', description: 'A crispy crepe from fermented rice/lentil batter. (GF)', time: 'Afternoon' },
+                        { name: 'Pulihora (Tamarind Rice)', price: 40.00, image: 'https://placehold.co/150x150/fff176/000?text=Pulihora', description: 'A tangy, naturally gluten-free rice dish (always confirm ingredients).', time: 'Afternoon' },
+                        { name: 'Corn Tortilla Tacos (GF)', price: 55.00, image: 'https://placehold.co/150x150/ff8a65/000?text=Tacos', description: 'Served in certified gluten-free corn tortillas.', time: 'Afternoon' },
+                        { name: 'Grilled Chicken & Quinoa Bowl', price: 70.00, image: 'https://placehold.co/150x150/4db6ac/000?text=Quinoa', description: 'Naturally gluten-free and packed with protein. Light dinner.', time: 'Night' },
+                        { name: 'Gluten-Free Pasta with Pesto', price: 65.00, image: 'https://placehold.co/150x150/66bb6a/000?text=GF+Pasta', description: 'Made with rice pasta and fresh pesto sauce (GF certified).', time: 'Night' }
+                    ]
+                }
+            ],
+            'General Wellness': [
+                {
+                    restaurant: 'The Good Life Kitchen',
+                    mealKits: [
+                        {
+                            name: '1 Week Balanced Energy Kit',
+                            price: 499.00,
+                            image: 'https://placehold.co/150x150/4F46E5/ffffff?text=7+Day+Kit',
+                            description: 'A mix of high-protein, high-fiber, and antioxidant-rich meals for optimal daily energy and balanced nutrition.',
+                            kitItems: ['7x Sprout Salads', '7x Buddha Bowl Mixes', '7x Healthy Soup Bases', '7x Protein Bars'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Sprouted Moong Salad', price: 50.00, image: 'https://placehold.co/150x150/ffeb3b/000?text=Sprouts', description: 'High fiber, high protein, energizing way to start the day.', time: 'Morning' },
+                        { name: 'Oats with Fruit and Seeds', price: 45.00, image: 'https://placehold.co/150x150/d32f2f/fff?text=Oats', description: 'Fiber-rich breakfast for long-lasting satiety.', time: 'Morning' },
+                        { name: 'Vegan Buddha Bowl', price: 55.00, image: 'https://placehold.co/150x150/4fc3f7/000?text=Buddha', description: 'Quinoa, roasted sweet potatoes, chickpeas, a perfect midday fuel.', time: 'Afternoon' },
+                        { name: 'Superfood Salad', price: 65.00, image: 'https://placehold.co/150x150/81c784/000?text=Salad', description: 'A mix of greens, nuts, and protein for a balanced lunch.', time: 'Afternoon' },
+                        { name: 'Chicken and Vegetable Stir-Fry', price: 70.00, image: 'https://placehold.co/150x150/ffc107/000?text=Stir+Fry', description: 'Lean protein and veg, easy on digestion for dinner.', time: 'Night' },
+                        { name: 'Palak Dal (High Fiber)', price: 35.00, image: 'https://placehold.co/150x150/8bc34a/000?text=Palak', description: 'A high-fiber spinach and lentil curry.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Fever': [
+                {
+                    restaurant: 'Aarogya Meals',
+                    mealKits: [
+                        {
+                            name: '1 Week Gentle Recovery Kit',
+                            price: 299.00,
+                            image: 'https://placehold.co/150x150/FF8C00/ffffff?text=7+Day+Kit',
+                            description: '7-day plan with soft, non-spicy, highly digestible meals to aid recovery and maintain hydration and energy.',
+                            kitItems: ['7x Rice Kanji Packs', '7x Plain Dalia Packs', '7x Vegetable Broth Sachets'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Rice Kanji (Thin Rice Porridge)', price: 30.00, image: 'https://placehold.co/150x150/e0f2f1/000?text=Kanji', description: 'Hydrating, very easy to digest, and non-spicy.', time: 'Morning' },
+                        { name: 'Plain Idli (2 Pcs) with Sambar (Mild)', price: 35.00, image: 'https://placehold.co/150x150/b0bec5/000?text=Idli', description: 'Steamed and fermented, light and easily assimilated.', time: 'Morning' },
+                        { name: 'Simple Vegetable Soup (Clear Broth)', price: 35.00, image: 'https://placehold.co/150x150/c8e6c9/000?text=Soup', description: 'Clear broth, minimal salt, and easy on the stomach.', time: 'Afternoon' },
+                        { name: 'Plain Dalia (Broken Wheat Porridge)', price: 35.00, image: 'https://placehold.co/150x150/e0f2f1/000?text=Dalia', description: 'Soft, easily digestible carbohydrate for energy.', time: 'Night' },
+                        { name: 'Lauki (Gourd) Halwa (Light)', price: 40.00, image: 'https://placehold.co/150x150/b2ff59/000?text=Halwa', description: 'Soft texture, easy on throat and stomach.', time: 'Night' },
+                    ]
+                }
+            ],
+            'Kidney Stones': [
+                {
+                    restaurant: 'Hydration Kitchen',
+                    mealKits: [
+                        {
+                            name: '1 Week Low-Oxalate & High Hydration Kit',
+                            price: 349.00,
+                            image: 'https://placehold.co/150x150/008080/ffffff?text=7+Day+Kit',
+                            description: '7-day plan promoting kidney health with low-oxalate ingredients and fluid-rich foods to help prevent stone formation.',
+                            kitItems: ['7x Buttermilk Mixes', '7x Low-Oxalate Veggie Packs', '7x Lauki Sabzi Meals'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Buttermilk (Chaas) (Low Salt, Plain)', price: 25.00, image: 'https://placehold.co/150x150/80deea/000?text=Chaas', description: 'Excellent source of fluid and probiotics for hydration.', time: 'Morning' },
+                        { name: 'Lemon Water (Shikanji, Less Sugar)', price: 20.00, image: 'https://placehold.co/150x150/fff9c4/000?text=Shikanji', description: 'Citrate-rich drink to help prevent stone formation.', time: 'Morning' },
+                        { name: 'Lauki (Bottle Gourd) Sabzi with 2 Wheat Rotis', price: 50.00, image: 'https://placehold.co/150x150/b2ff59/000?text=Lauki', description: 'Low oxalate, low salt dish, gentle on kidneys.', time: 'Afternoon' },
+                        { name: 'Cucumber & Mint Raita (Low Salt)', price: 35.00, image: 'https://placehold.co/150x150/64b5f6/000?text=Raita', description: 'Cooling, hydrating, and low in sodium.', time: 'Afternoon' },
+                        { name: 'Simple Vegetable Soup (Clear Broth)', price: 35.00, image: 'https://placehold.co/150x150/c8e6c9/000?text=Soup', description: 'Hydrating and minimal salt content.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Dengue Fever': [
+                {
+                    restaurant: 'Platelet Boosters',
+                    mealKits: [
+                        {
+                            name: '1 Week Platelet Support Kit',
+                            price: 399.00,
+                            image: 'https://placehold.co/150x150/FF1493/ffffff?text=7+Day+Kit',
+                            description: '7-day kit focusing on soft, fluid-rich meals, and traditional immunity boosters to support recovery and fight fatigue.',
+                            kitItems: ['7x Papaya Leaf Infusions', '7x Sweet Potato Purees', '7x Boiled Egg Packs', '7x Coconut Water'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Giloy & Papaya Leaf Infusion', price: 30.00, image: 'https://placehold.co/150x150/a5d6a7/000?text=Infusion', description: 'Traditional liquid support for immunity and recovery.', time: 'Morning' },
+                        { name: 'Sweet Potato & Lentil Puree', price: 55.00, image: 'https://placehold.co/150x150/ffab91/000?text=Puree', description: 'High in vitamins, providing gentle energy. Easy to swallow.', time: 'Afternoon' },
+                        { name: 'Plain Dalia with Steamed Carrots', price: 40.00, image: 'https://placehold.co/150x150/e0f2f1/000?text=Dalia', description: 'Highly digestible and nutritious carbohydrate base.', time: 'Afternoon' },
+                        { name: 'Simple Anda Bhurji (Scrambled Egg)', price: 45.00, image: 'https://placehold.co/150x150/ffd54f/000?text=Bhurji', description: 'Quick, easy protein for recovery and energy.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Jaundice': [
+                {
+                    restaurant: 'Liver Light',
+                    mealKits: [
+                        {
+                            name: '1 Week Liver Gentle Diet Kit',
+                            price: 349.00,
+                            image: 'https://placehold.co/150x150/DAA520/ffffff?text=7+Day+Kit',
+                            description: '7-day kit featuring non-fat, easy-to-digest meals focusing on simple carbs and minimal spice/oil to aid liver recovery.',
+                            kitItems: ['7x Sugarcane Juice Packs', '7x Steamed Rice/Dal Packs', '7x Boiled Veggie Mixes'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Sugarcane Juice (Fresh)', price: 30.00, image: 'https://placehold.co/150x150/dcedc8/000?text=Juice', description: 'Instant energy booster, traditionally used for liver health.', time: 'Morning' },
+                        { name: 'Plain Steamed Rice with Clear Moong Dal', price: 45.00, image: 'https://placehold.co/150x150/fffde7/000?text=Moong+Dal', description: 'Non-fat, easily digestible, and carb-rich for liver repair.', time: 'Afternoon' },
+                        { name: 'Boiled Vegetables (Carrots, Beans, Beetroot)', price: 40.00, image: 'https://placehold.co/150x150/ff8a65/000?text=Veg', description: 'Steamed, oil-free vegetables for essential vitamins.', time: 'Night' },
+                        { name: 'Simple Sago (Sabudana) Kheer', price: 35.00, image: 'https://placehold.co/150x150/ffeb3b/000?text=Sago', description: 'Easy energy, cooked in water or very low-fat milk.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Skin Diseases': [
+                {
+                    restaurant: 'Glow Kitchen',
+                    mealKits: [
+                        {
+                            name: '1 Week Detox & Cleanse Kit',
+                            price: 499.00,
+                            image: 'https://placehold.co/150x150/32CD32/ffffff?text=7+Day+Kit',
+                            description: '7-day kit focusing on anti-inflammatory, detoxifying foods, rich in antioxidants and vital micronutrients for skin health.',
+                            kitItems: ['7x Turmeric Milk Pre-mixes', '7x Sprouted Moong Salad Packs', '7x Neem/Methi Roti Packs'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Haldi Doodh (Turmeric Milk) (Low Fat)', price: 30.00, image: 'https://placehold.co/150x150/ffb74d/000?text=Haldi', description: 'Anti-inflammatory and detoxifying drink for skin.', time: 'Morning' },
+                        { name: 'Sprouted Moong Salad', price: 50.00, image: 'https://placehold.co/150x150/ffeb3b/000?text=Sprouts', description: 'Rich in antioxidants and protein for tissue repair.', time: 'Afternoon' },
+                        { name: 'Neem & Methi Paratha (1 pc)', price: 45.00, image: 'https://placehold.co/150x150/8bc34a/000?text=Neem', description: 'Contains bitter greens known for blood purification/skin benefits.', time: 'Afternoon' },
+                        { name: 'Cucumber Raita (Plain Curd)', price: 35.00, image: 'https://placehold.co/150x150/64b5f6/000?text=Raita', description: 'Cooling, soothing, and provides probiotics. Can be an evening snack.', time: 'Night' },
+                        { name: 'Beetroot & Carrot Juice', price: 35.00, image: 'https://placehold.co/150x150/FF8A65/000?text=Juice', description: 'High in Vitamin C and antioxidants for skin repair.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Thyroid Issues (Hypo)': [
+                {
+                    restaurant: 'Endocrine Eats',
+                    mealKits: [
+                        {
+                            name: '1 Week Thyroid Balance Kit',
+                            price: 499.00,
+                            image: 'https://placehold.co/150x150/00BFFF/ffffff?text=7+Day+Kit',
+                            description: '7-day plan with Iodine, Selenium, and Zinc rich foods. Includes complex carbs and lean proteins to support metabolism.',
+                            kitItems: ['7x Bajra/Jowar Roti Packs', '7x Fish Curry Mixes', '7x Seed/Nut Mixes'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Bajra Roti with Palak (Spinach)', price: 40.00, image: 'https://placehold.co/150x150/8bc34a/000?text=Bajra', description: 'High fiber millet bread with iron-rich spinach.', time: 'Morning' },
+                        { name: 'Pumpkin Seed Lassi (Sweetened with Jaggery)', price: 45.00, image: 'https://placehold.co/150x150/ffcc80/000?text=Lassi', description: 'Source of Zinc and protein, easy to digest.', time: 'Morning' },
+                        { name: 'Baked Fish Curry (Low Oil)', price: 80.00, image: 'https://placehold.co/150x150/29b6f6/000?text=Fish', description: 'Good source of Iodine and Omega-3s for thyroid support.', time: 'Afternoon' },
+                        { name: 'Brown Rice with Rajma', price: 65.00, image: 'https://placehold.co/150x150/d32f2f/fff?text=Rajma', description: 'Complex carbohydrates and fiber for sustained energy.', time: 'Afternoon' }
+                    ]
+                }
+            ],
+            'Migraine': [
+                {
+                    restaurant: 'Soothe Spot',
+                    mealKits: [
+                        {
+                            name: '1 Week Trigger-Free Hydration Kit',
+                            price: 349.00,
+                            image: 'https://placehold.co/150x150/800080/ffffff?text=7+Day+Kit',
+                            description: '7-day plan featuring fresh, bland, low-tyramine, and low-nitrate meals to minimize common dietary migraine triggers.',
+                            kitItems: ['7x Coconut Water', '7x Ghiya Dal Packs', '7x Steamed Veggie Sides'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Fresh Coconut Water (No Ice)', price: 30.00, image: 'https://placehold.co/150x150/80deea/000?text=Coconut', description: 'Excellent hydration and electrolyte balance.', time: 'Morning' },
+                        { name: 'Plain Rice with Fresh Ghiya Dal (Bottle Gourd)', price: 50.00, image: 'https://placehold.co/150x150/e0f2f1/000?text=Ghiya', description: 'Bland, fresh, and low in common migraine triggers.', time: 'Afternoon' },
+                        { name: 'Lightly Steamed Broccoli/Carrots', price: 40.00, image: 'https://placehold.co/150x150/64dd17/000?text=Broccoli', description: 'Freshly prepared vegetables, low in preservatives and salt.', time: 'Night' },
+                        { name: 'Masoor Dal (Red Lentil) Soup', price: 45.00, image: 'https://placehold.co/150x150/ff8a65/000?text=Soup', description: 'A mild, hydrating soup, prepared with minimal spices.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Cancer': [
+                {
+                    restaurant: 'Recovery Plates',
+                    mealKits: [
+                        {
+                            name: '1 Week Nourishing Strength Kit',
+                            price: 549.00,
+                            image: 'https://placehold.co/150x150/C71585/ffffff?text=7+Day+Kit',
+                            description: '7-day plan focusing on soft, high-calorie, and high-protein density meals to maintain weight and energy during treatment.',
+                            kitItems: ['7x Protein Broths', '7x Kheer/Dalia Packs', '7x Soft Egg/Rice Meals'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Boiled Egg & Toast (Soft)', price: 40.00, image: 'https://placehold.co/150x150/ffd54f/000?text=Egg', description: 'High-protein, easy-to-chew meal for strength.', time: 'Morning' },
+                        { name: 'Ragi Porridge (Millet)', price: 40.00, image: 'https://placehold.co/150x150/8bc34a/000?text=Ragi', description: 'Mineral-rich, easy-to-digest, soft porridge.', time: 'Morning' },
+                        { name: 'Chicken Bone Broth (Lightly Spiced)', price: 60.00, image: 'https://placehold.co/150x150/ff8a65/000?text=Broth', description: 'Hydration and easy source of protein/nutrients.', time: 'Afternoon' },
+                        { name: 'Creamy Kheer (Rice Pudding) (Small Portion)', price: 45.00, image: 'https://placehold.co/150x150/ffc107/000?text=Kheer', description: 'Soft, high-calorie option for energy and comfort.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Diarrhea / Loose Motions': [
+                {
+                    restaurant: 'BRAT Basics',
+                    mealKits: [
+                        {
+                            name: '1 Week Binding & Rehydration Kit',
+                            price: 249.00,
+                            image: 'https://placehold.co/150x150/556B2F/ffffff?text=7+Day+Kit',
+                            description: '7-day kit featuring bland, binding foods (BRAT-friendly) and essential ORS to restore gut balance and hydration.',
+                            kitItems: ['7x Banana Packs', '7x ORS Packs', '7x Plain Rice/Curd Meals', '7x Sabudana Packs'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Banana Mash (Ripe)', price: 20.00, image: 'https://placehold.co/150x150/fff9c4/000?text=Banana', description: 'High in potassium and binding fiber.', time: 'Morning' },
+                        { name: 'Salt-Sugar Solution (ORS Home)', price: 15.00, image: 'https://placehold.co/150x150/d3fcc3/000?text=ORS', description: 'Essential for immediate rehydration.', time: 'Morning' },
+                        { name: 'Plain Curd Rice (Dahi Chawal)', price: 40.00, image: 'https://placehold.co/150x150/b0bec5/000?text=Curd', description: 'Probiotics and binding properties for the stomach.', time: 'Afternoon' },
+                        { name: 'Sabudana Khichdi (Tapioca)', price: 35.00, image: 'https://placehold.co/150x150/ffeb3b/000?text=Sabudana', description: 'Light, starchy, and easy on the digestive system.', time: 'Night' },
+                        { name: 'Plain White Rice with Salt', price: 30.00, image: 'https://placehold.co/150x150/e0f2f1/000?text=Rice', description: 'Binding starch to firm up stools.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Acidity': [
+                {
+                    restaurant: 'Cooling Comfort',
+                    mealKits: [
+                        {
+                            name: '1 Week Acid-Neutralizer Kit',
+                            price: 299.00,
+                            image: 'https://placehold.co/150x150/FFD700/ffffff?text=7+Day+Kit',
+                            description: '7-day kit of cooling, low-fat, non-spicy foods to quickly soothe the stomach and prevent frequent heartburn and reflux.',
+                            kitItems: ['7x Curd/Chaas Packs', '7x Banana Packs', '7x Light Poha Packs', '7x Coconut Water'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Plain Curd (Dahi) - Small Bowl', price: 20.00, image: 'https://placehold.co/150x150/d3fcc3/000?text=Curd', description: 'Cooling, probiotic, helps balance stomach acid.', time: 'Morning' },
+                        { name: 'Banana (Single Ripe)', price: 15.00, image: 'https://placehold.co/150x150/fff9c4/000?text=Banana', description: 'Low acidity, coats the stomach lining.', time: 'Morning' },
+                        { name: 'Light Poha (Flattened Rice)', price: 35.00, image: 'https://placehold.co/150x150/b0bec5/000?text=Poha', description: 'Easy to digest, minimal oil and spice.', time: 'Afternoon' },
+                        { name: 'Fresh Coconut Water', price: 25.00, image: 'https://placehold.co/150x150/80deea/000?text=Coconut', description: 'Natural electrolytes, helps neutralize stomach pH.', time: 'Afternoon' },
+                        { name: 'Ghee Roti (Plain Wheat Roti with Ghee)', price: 30.00, image: 'https://placehold.co/150x150/8bc34a/000?text=Roti', description: 'Bland bread, ghee helps neutralize stomach acid.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Heart Disease': [
+                {
+                    restaurant: 'Cardio Cuisine',
+                    mealKits: [
+                        {
+                            name: '1 Week Heart Health Kit',
+                            price: 599.00,
+                            image: 'https://placehold.co/150x150/DC143C/ffffff?text=7+Day+Kit',
+                            description: '7-day low-fat, low-sodium kit rich in Omega-3s and soluble fiber, perfect for lowering cholesterol and blood pressure.',
+                            kitItems: ['7x Oats Khichdi Packs', '7x Moong Dal Cheela Mixes', '7x Steamed Fish/Lentil Meals'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Moong Dal Cheela (Oil-Free)', price: 50.00, image: 'https://placehold.co/150x150/d1e7dd/000?text=Cheela', description: 'Low fat, high protein pancake. Excellent for breakfast.', time: 'Morning' },
+                        { name: 'Oats Khichdi (Vegetable)', price: 45.00, image: 'https://placehold.co/150x150/ff9800/000?text=Oats', description: 'High in soluble fiber (lowers cholesterol), very low sodium.', time: 'Afternoon' },
+                        { name: 'Steamed Fish with Lemon & Coriander', price: 80.00, image: 'https://placehold.co/150x150/4fc3f7/000?text=Steamed+Fish', description: 'Lean, low-sodium preparation rich in Omega-3s.', time: 'Afternoon' },
+                        { name: 'Low-Sodium Vegetable Clear Soup', price: 35.00, image: 'https://placehold.co/150x150/c8e6c9/000?text=Clear+Soup', description: 'No added salt, hydrating and heart-friendly.', time: 'Night' },
+                        { name: 'Barley Salad with Herbs', price: 50.00, image: 'https://placehold.co/150x150/8bc34a/000?text=Barley', description: 'A whole grain rich in fiber and beneficial for heart health.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Chicken Pox': [
+                {
+                    restaurant: 'Comfort Coolers',
+                    mealKits: [
+                        {
+                            name: '1 Week Cooling & Soothing Kit',
+                            price: 299.00,
+                            image: 'https://placehold.co/150x150/00CED1/ffffff?text=7+Day+Kit',
+                            description: '7-day kit featuring soft, cool, and bland foods to soothe the throat and maintain hydration without irritating sensitive areas.',
+                            kitItems: ['7x Buttermilk', '7x Coconut Water', '7x Plain Dalia', '7x Soft Rice Packs'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Thin Buttermilk (Chaas) - Plain', price: 20.00, image: 'https://placehold.co/150x150/80deea/000?text=Chaas', description: 'Cooling, hydrating, and easy to swallow.', time: 'Morning' },
+                        { name: 'Coconut Water (Fresh)', price: 25.00, image: 'https://placehold.co/150x150/fff9c4/000?text=Coconut', description: 'Electrolyte-rich and naturally cooling.', time: 'Morning' },
+                        { name: 'Plain Dalia (Broken Wheat Porridge)', price: 35.00, image: 'https://placehold.co/150x150/e0f2f1/000?text=Dalia', description: 'Soft, easily digestible carbohydrate for energy.', time: 'Afternoon' },
+                        { name: 'Soft Rice with Ghee (Small Portion)', price: 30.00, image: 'https://placehold.co/150x150/b0bec5/000?text=Rice+Ghee', description: 'Provides energy and healthy fats in a soft form.', time: 'Night' },
+                        { name: 'Plain Rice Kheer (Sweetened less)', price: 40.00, image: 'https://placehold.co/150x150/ffc107/000?text=Kheer', description: 'Cold and soft dessert, soothing for the throat.', time: 'Night' }
+                    ]
+                }
+            ],
+            'Personalized Diet': [
+                {
+                    restaurant: 'Agathiyar AI Kitchen',
+                    mealKits: [
+                        {
+                            name: '1 Week Hyper-Custom AI Kit',
+                            price: 799.00,
+                            image: 'https://placehold.co/150x150/4F46E5/ffffff?text=7+Day+Kit',
+                            description: 'A 7-day personalized kit. The contents and composition are specifically calculated based on your simulated health report analysis.',
+                            kitItems: ['7x Custom Meals', '7x Targeted Supplement Drinks', '7x AI-Analyzed Snacks'],
+                        }
+                    ],
+                    items: [
+                        { name: 'Sprouted Pulse & Veggie Bowl', price: 60.00, image: 'https://placehold.co/150x150/FF9800/fff?text=Sprouts', description: 'High fiber and mineral-rich preparation for gut health and vitality.', time: 'Morning' },
+                        { name: 'Custom AI-Balanced Thali', price: 75.00, image: 'https://placehold.co/150x150/4CAF50/fff?text=AI+Thali', description: 'Simulated to be low in sodium, moderate in protein, and rich in B12.', time: 'Afternoon' },
+                        { name: 'Immunity Boosting Kadha Soup', price: 40.00, image: 'https://placehold.co/150x150/FFEB3B/000?text=Kadha', description: 'A warm, anti-inflammatory soup tailored for overall system recovery.', time: 'Night' },
+                        { name: 'Low Glycemic Dessert (Seasonal)', price: 45.00, image: 'https://placehold.co/150x150/E91E63/fff?text=Sweet', description: 'A safe, measured portion of dessert based on simulated blood sugar levels.', time: 'Night' }
+                    ]
+                }
+            ]
+        };
+
+        let selectedDisease = null;
+        let cart = [];
+
+        // --- DOM Elements ---
+        const diseaseSelectionSection = document.getElementById('disease-selection');
+        const mainContentSection = document.getElementById('main-content');
+        const restaurantHeading = document.getElementById('restaurant-heading');
+        const restaurantList = document.getElementById('restaurant-list');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalDisplay = document.getElementById('cart-total');
+        const messageModal = document.getElementById('message-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const diseaseInput = document.getElementById('disease-input');
+
+        // --- Functions ---
+        
+        /**
+         * Shows a message in a custom modal instead of an alert.
+         * @param {string} title The title of the modal.
+         * @param {string} message The message to display.
+         */
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            messageModal.classList.remove('hidden');
+            messageModal.classList.add('flex');
+        }
+
+        /**
+         * Hides the custom modal.
+         */
+        function closeModal() {
+            messageModal.classList.add('hidden');
+            messageModal.classList.remove('flex');
+        }
+
+        /**
+         * Renders the menu for the selected disease.
+         * @param {string} disease The selected disease name.
+         */
+        function selectDisease(disease) {
+            selectedDisease = disease;
+            restaurantHeading.textContent = `Menus for ${disease}`;
+            diseaseSelectionSection.classList.add('hidden');
+            mainContentSection.classList.remove('hidden');
+            renderRestaurants();
+        }
+
+        /**
+         * Searches for a disease based on user input.
+         */
+        function searchDisease() {
+            const input = diseaseInput.value.trim();
+            if (input === '') {
+                showModal('Input Required', 'Please type a health condition to search.');
+                return;
+            }
+
+            const normalizedInput = input.toLowerCase();
+            
+            // Check for exact match in keys
+            let foundDisease = Object.keys(menuData).find(key => key.toLowerCase() === normalizedInput.toLowerCase());
+
+            // Handle "blood pressure" alias
+            if (!foundDisease && normalizedInput.includes('blood pressure')) {
+                foundDisease = 'Hypertension';
+            }
+            
+            if (foundDisease) {
+                selectDisease(foundDisease);
+            } else {
+                showModal('Not Found', 'Sorry, we do not have specific menus for that condition yet. Please select from the options provided or check your spelling.');
+            }
+        }
+
+        /**
+         * Simulates processing the uploaded health report.
+         */
+        function processReport() {
+            const fileInput = document.getElementById('health-report-upload');
+            if (fileInput.files.length === 0) {
+                showModal('File Missing', 'Please select a health report file (PDF or image) to upload first.');
+                return;
+            }
+
+            // Simulate file processing and personalized recommendation generation
+            const fileName = fileInput.files[0].name;
+            showModal('Processing Report', `Analyzing file: ${fileName}. Generating a highly personalized diet plan based on simulated report findings...`);
+            
+            // Use a slight delay to enhance the simulation feel
+            setTimeout(() => {
+                selectDisease('Personalized Diet');
+            }, 1500); // 1.5 second delay
+        }
+
+        /**
+         * Clears the current selection and returns to the disease selection screen.
+         */
+        function clearSelection() {
+            selectedDisease = null;
+            cart = [];
+            diseaseInput.value = '';
+            document.getElementById('health-report-upload').value = null; // Clear file input
+            diseaseSelectionSection.classList.remove('hidden');
+            mainContentSection.classList.add('hidden');
+            updateCartDisplay();
+        }
+
+        /**
+         * Adds an item (individual or kit) to the shopping cart.
+         * @param {string} restaurant The restaurant name.
+         * @param {string} itemName The name of the menu item.
+         * @param {number} price The price of the item.
+         */
+        function addToCart(restaurant, itemName, price) {
+            cart.push({ restaurant, name: itemName, price });
+            showModal('Added to Cart', `${itemName} from ${restaurant} has been added.`);
+            updateCartDisplay();
+        }
+
+        /**
+         * Removes an item from the cart.
+         * @param {number} index The index of the item to remove.
+         */
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+
+        /**
+         * Updates the cart display and total price.
+         */
+        function updateCartDisplay() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-sm italic p-2 rounded-lg bg-gray-50">Your cart is empty.</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'flex justify-between items-center bg-white p-3 rounded-xl mb-2 border border-gray-200 shadow-sm';
+                    cartItemEl.innerHTML = `
+                        <div>
+                            <p class="font-medium text-gray-800">${item.name}</p>
+                            <p class="text-xs text-gray-500">${item.restaurant}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-semibold text-primary-teal">₹${item.price.toFixed(2)}</span>
+                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 font-bold p-1 rounded-full bg-red-100/50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemEl);
+                });
+            }
+            cartTotalDisplay.textContent = `₹${total.toFixed(2)}`;
+        }
+
+        /**
+         * Renders the restaurants and their menus for the selected disease, grouped by kit and time of day.
+         */
+        function renderRestaurants() {
+            restaurantList.innerHTML = '';
+            const allRestaurants = menuData[selectedDisease] || [];
+
+            if (allRestaurants.length === 0) {
+                restaurantList.innerHTML = `<p class="text-gray-500 text-center col-span-full p-8 bg-white rounded-xl shadow-lg">No restaurants found for this condition. We are working on adding more soon!</p>`;
+                return;
+            }
+
+            const timeOrder = ['Morning', 'Afternoon', 'Night'];
+            const timeIcons = {
+                'Morning': '☀️',
+                'Afternoon': '🌤️',
+                'Night': '🌙'
+            };
+
+            allRestaurants.forEach(restaurant => {
+                const restaurantCard = document.createElement('div');
+                restaurantCard.className = 'bg-white p-6 rounded-2xl shadow-xl border border-primary-teal/20';
+                restaurantCard.innerHTML = `
+                    <h3 class="text-2xl font-bold text-primary-indigo mb-4 border-b pb-2">${restaurant.restaurant}</h3>
+                `;
+
+                const menuContainer = document.createElement('div');
+                menuContainer.className = 'grid grid-cols-1 gap-6';
+
+                // --- 1. Render Meal Kits Section ---
+                if (restaurant.mealKits && restaurant.mealKits.length > 0) {
+                    const kit = restaurant.mealKits[0]; // Assuming one kit per restaurant for simplicity
+                    const kitSection = document.createElement('div');
+                    kitSection.className = 'col-span-full mb-6';
+                    kitSection.innerHTML = `
+                        <h4 class="text-xl font-extrabold text-red-600 mt-4 mb-3 border-b-2 border-red-600/50 flex items-center">
+                            📦 <span class="ml-2">1 WEEK HEALTH KIT PLAN</span>
+                        </h4>
+                        <div class="menu-item flex flex-col md:flex-row items-start bg-red-50 p-6 rounded-xl shadow-2xl border-4 border-red-600/50 transition-all duration-300 transform hover:scale-[1.01]">
+                            <img src="${kit.image}" alt="${kit.name}" class="w-24 h-24 rounded-lg object-cover mr-4 mb-3 md:mb-0 border-2 border-red-600/50" onerror="this.onerror=null; this.src='https://placehold.co/150x150/eee/000?text=KIT';">
+                            <div class="flex-grow">
+                                <h4 class="font-bold text-xl text-red-800">${kit.name}</h4>
+                                <p class="text-sm text-gray-700 mt-1 mb-3">${kit.description}</p>
+                                <ul class="text-xs text-gray-600 list-disc list-inside mb-3">
+                                    ${kit.kitItems.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                                <span class="font-extrabold text-2xl text-red-600 inline-block">₹${kit.price.toFixed(2)}</span>
+                            </div>
+                            <button onclick="addToCart('${restaurant.restaurant}', '${kit.name}', ${kit.price})" class="add-to-cart-btn bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded-lg shadow-md hover:scale-105 mt-3 md:mt-0 ml-auto">
+                                + Add Kit
+                            </button>
+                        </div>
+                    `;
+                    menuContainer.appendChild(kitSection);
+                }
+
+                // --- 2. Group and Render Individual A-la-Carte Items ---
+                
+                // Group items by time
+                const itemsByTime = restaurant.items.reduce((acc, item) => {
+                    (acc[item.time] = acc[item.time] || []).push(item);
+                    return acc;
+                }, {});
+
+                // Render time slots in order
+                timeOrder.forEach(time => {
+                    const items = itemsByTime[time];
+                    if (items && items.length > 0) {
+                        const timeSection = document.createElement('div');
+                        timeSection.innerHTML = `
+                            <h4 class="text-xl font-extrabold text-primary-teal mt-4 mb-3 border-b-2 border-primary-teal/50 flex items-center">
+                                ${timeIcons[time] || ''} <span class="ml-2">${time}</span>
+                            </h4>
+                        `;
+                        
+                        items.forEach(item => {
+                            const menuItem = document.createElement('div');
+                            menuItem.className = 'menu-item flex flex-col md:flex-row items-start md:items-center bg-white p-4 rounded-xl shadow-lg border border-gray-100 transition-all duration-300 transform hover:shadow-xl hover:border-secondary-green';
+                            menuItem.innerHTML = `
+                                <img src="${item.image}" alt="${item.name}" class="w-20 h-20 rounded-lg object-cover mr-4 mb-3 md:mb-0 border-2 border-secondary-green/30" onerror="this.onerror=null; this.src='https://placehold.co/150x150/eee/000?text=Food';">
+                                <div class="flex-grow">
+                                    <h4 class="font-bold text-lg text-gray-800">${item.name}</h4>
+                                    <p class="text-xs text-gray-500 mt-1 mb-2">${item.description}</p>
+                                    <span class="font-extrabold text-xl text-primary-teal inline-block">₹${item.price.toFixed(2)}</span>
+                                </div>
+                                <button onclick="addToCart('${restaurant.restaurant}', '${item.name}', ${item.price})" class="add-to-cart-btn text-white text-sm font-bold py-2 px-4 rounded-lg shadow-md hover:scale-105 mt-3 md:mt-0">
+                                    + Add
+                                </button>
+                            `;
+                            timeSection.appendChild(menuItem);
+                        });
+                        menuContainer.appendChild(timeSection);
+                    }
+                });
+
+                restaurantCard.appendChild(menuContainer);
+                restaurantList.appendChild(restaurantCard);
+            });
+        }
+
+        /**
+         * Handles the checkout process.
+         */
+        function checkout() {
+            if (cart.length === 0) {
+                showModal('Cart is Empty', 'Please add some items to your cart before checking out.');
+                return;
+            }
+            const totalAmount = cart.reduce((sum, item) => sum + item.price, 0).toFixed(2);
+            showModal('Order Placed!', `Your order of ₹${totalAmount} has been successfully placed. Your Agathiyar Aahar is on its way!`);
+            cart = [];
+            updateCartDisplay();
+        }
+    </script>
+</body>
+</html>
